@@ -1,9 +1,31 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {LoginSocialFacebook} from "reactjs-social-login"
-import {FacebookLoginButton} from "react-social-login-buttons";
+import { LoginSocialFacebook, LoginSocialGoogle } from "reactjs-social-login";
+import {
+  FacebookLoginButton,
+  GoogleLoginButton,
+} from "react-social-login-buttons";
 
+
+
+  let signup = document.querySelector(".signup");
+  let loginSlide = document.querySelector(".login");
+  let slider = document.querySelector(".slider");
+  let formSection = document.querySelector(".form-section");
+
+ if (signup) {
+   signup.addEventListener("click", () => {
+     slider.classList.add("moveslider");
+     formSection.classList.add("form-section-move");
+   });
+ }
+if (loginSlide) {
+  loginSlide.addEventListener("click", () => {
+    slider.classList.remove("moveslider");
+    formSection.classList.remove("form-section-move");
+  });
+}
 const LoginAndRegister = () => {
   const [section, setSection] = useState(true);
   const [email, setEmail] = useState("");
@@ -27,7 +49,7 @@ const LoginAndRegister = () => {
         setRegisterStatus("Please fill all fields");
         return false;
       }
-      
+
       if (password !== confirmPassword) {
         setRegisterStatus("Passwords do not match");
         return false;
@@ -69,39 +91,46 @@ const LoginAndRegister = () => {
         setLoginStatus(response.data.message);
       }
     } catch (error) {
+
       setLoginStatus(error.response.data.message);
     }
   };
 
-  return (
-    <>
-      <header>
-        <h1 class='heading'>Login & Signup</h1>
-      </header>
-      <div class='container'>
-        <div class='slider'></div>
-        <div class='btn'>
-          <button
-            class='login'
-            onClick={() => {
-              setSection(true);
-            }}
-          >
-            Login
-          </button>
 
-          <button
-            class='signup'
-            onClick={() => {
-              setSection(false);
-            }}
-          >
-            Signup
-          </button>
-        </div>
-        <div class='form-section'>
-          {section ? (
-            <>
+  return (
+    <div className="outer-div">
+      <div>
+        <h1>
+          Website Monitoring<br/> and performance <br/> testing solutions
+        </h1>
+      </div>
+      <div>
+        <header>
+          <h1 class='heading'>Login & Signup</h1>
+        </header>
+        <div class='container'>
+          <div class='slider'></div>
+          <div class='btn'>
+            <button
+              class='login'
+              onClick={() => {
+                setSection(true);
+              }}
+            >
+              Login
+            </button>
+
+            <button
+              class='signup'
+              onClick={() => {
+                setSection(false);
+              }}
+            >
+              Signup
+            </button>
+          </div>
+          <div class='form-section'>
+           {section? (<>
               <div class='login-box'>
                 <input
                   type='email'
@@ -118,18 +147,40 @@ const LoginAndRegister = () => {
                 <button class='clkbtn' onClick={login}>
                   Login
                 </button>
-                <LoginSocialFacebook appId='603780851777579'
-                onResolve={(response)=>{
-                    localStorage.setItem("token", response.data.token);
+                <div>
+                  <LoginSocialFacebook
+                    appId='603780851777579'
+                    onResolve={(response) => {
+                      localStorage.setItem("token", response.data.token);
 
-                    setLoginStatus(response.data.message);
-                }}
-                onReject={(error)=>{
-                  console.log(error);
-                }}
-                >
-                  <FacebookLoginButton />
-                </LoginSocialFacebook>
+                      setLoginStatus(response.data.message);
+                    }}
+                    onReject={(error) => {
+                      setLoginStatus(error.response.data.message);
+                    }}
+                  >
+                    <FacebookLoginButton />
+                  </LoginSocialFacebook>
+
+                  <LoginSocialGoogle
+                    client_id={
+                      "80272596296-pandoa9m2huov8rg67qtbad0k89jn2vp.apps.googleusercontent.com"
+                    }
+                    scope='openid profile email'
+                    discoveryDocs='claims_supported'
+                    access_type='offline'
+                    onResolve={({ provider, data }) => {
+                      console.log(provider, data);
+                      localStorage.setItem("token", data.access_token);
+                      setLoginStatus(data.message);
+                    }}
+                    onReject={(error) => {
+                      console.log(error);
+                    }}
+                  >
+                    <GoogleLoginButton />
+                  </LoginSocialGoogle>
+                </div>
                 <h1
                   style={{
                     color: "red",
@@ -140,9 +191,9 @@ const LoginAndRegister = () => {
                   {loginStatus}
                 </h1>
               </div>
-            </>
-          ) : (
-            <>
+            </>)
+:
+            (<>
               <div class='signup-box'>
                 <input
                   type='text'
@@ -189,11 +240,11 @@ const LoginAndRegister = () => {
                   {registerStatus}
                 </h1>
               </div>
-            </>
-          )}
+            </>)}
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

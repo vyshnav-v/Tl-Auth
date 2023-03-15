@@ -12,7 +12,7 @@ const Home = () => {
       <h1>Home</h1>
       <p>You are logged in.</p>
       {/* <button style={{backgroundColor:"red", }}>Log Out</button> */}
-      <button class='button-78' role='button' onClick={handleLogout}>
+      <button class='button-78'  onClick={handleLogout}>
         Log Out
       </button>
     </div>
